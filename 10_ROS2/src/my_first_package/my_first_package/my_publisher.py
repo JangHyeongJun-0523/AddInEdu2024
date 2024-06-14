@@ -3,10 +3,10 @@ from rclpy.node import Node
 
 from geometry_msgs.msg import Twist
 
-class TurtlesimSubscriber(Node):
+class Turtlesimpublisher(Node):
 
 	def __init__(self):
-		super().__init__('turtlesim_subscriber')
+		super().__init__('turtlesim_publisher')
 		self.publisher = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
 		timer_period = 0.5
 		self.timer = self.create_timer(timer_period, self.timer_callback)
@@ -20,10 +20,10 @@ class TurtlesimSubscriber(Node):
 def main(args=None):
 	rp.init(args=args)
 
-	turtlesim_subscriber = TurtlesimSubscriber()
-	rp.spin(turtlesim_subscriber)
+	turtlesim_publisher = Turtlesimpublisher()
+	rp.spin(turtlesim_publisher)
 
-	turtlesim_subscriber.destroy_node()
+	turtlesim_publisher.destroy_node()
 	rp.shutdown()
 
 if __name__ == '__main__':
