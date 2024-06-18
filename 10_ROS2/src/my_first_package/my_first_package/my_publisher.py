@@ -7,14 +7,14 @@ class TurtlesimPublisher(Node):
 
 	def __init__(self):
 		super().__init__('turtlesim_publisher')
-		self.publisher = self.create_publisher(Twist, '/turtle1/cmd_vel', 10)
+		self.publisher = self.create_publisher(Twist, '/turtlesim/turtle1/cmd_vel', 10)
 		timer_period = 0.5
 		self.timer = self.create_timer(timer_period, self.timer_callback)
 
 	def timer_callback(self):
 		msg = Twist()
-		msg.linear.x = 70.0
-		msg.angular.z = 15.0
+		msg.linear.x = 2.0
+		msg.angular.z = 2.0
 		self.publisher.publish(msg)
 		
 def main(args=None):
