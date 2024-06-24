@@ -5,7 +5,7 @@
 	
 	<node pkg="robot_state_publisher" exec="robot_state_publisher" name='robot_state_publisher' output='screen'>
 	
-		<param name="robot_description" value="$(command 'xacro $(find-pkg-share my_robot_description)/urdf/robot_core.xacro')" />
+		<param name="robot_description" value="$(command 'xacro $(find-pkg-share my_robot_description)/urdf/robot.urdf.xacro')" />
 	
 	</node>
 	
