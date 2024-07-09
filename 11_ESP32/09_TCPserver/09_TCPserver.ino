@@ -1,18 +1,25 @@
 #include <WiFi.h>
+#include <ESP32Servo.h>
 
 const char* ssid = "addinedu_class_1(2.4G)";
 const char* password = "addinedu1";
 
 WiFiServer server(80);
 
+Servo servo;
+const int servo_pin = 5;
+
 void setup() {
   // put your setup code here, to run once:
-  Serial.begin(115200);
-  Serial.println("ESP32 TCP Server Start");
-  Serial.println(ssid);
+  servo.attach(servo_pin);
+  
   pinMode(21, OUTPUT);
   pinMode(22, OUTPUT);
   pinMode(23, OUTPUT);
+
+  Serial.begin(115200);
+  Serial.println("ESP32 TCP Server Start");
+  Serial.println(ssid);
 
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
@@ -45,6 +52,19 @@ void loop() {
       while (client.available() > 0) {
         client.readBytes(data, 8);
         memcpy(&p, &data, sizeof(p));
+
+        if (p.pin == servo_pin) {
+          servo.write(p.status);
+        }
+        else if (p.pin == 34) {
+          int value = analogRead(p.pin);
+          p.status = value;
+
+          memcpy(&data, &p, sizeof(p));
+        }
+        else{
+          digitalWrite(p.pin, p.status);
+        }
 
         digitalWrite(p.pin, p.status);
 

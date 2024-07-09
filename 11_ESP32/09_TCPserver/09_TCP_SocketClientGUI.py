@@ -2,9 +2,10 @@ import sys
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 from PyQt5 import uic
-from PyQt5.QtCore import QRegExp
+from PyQt5.QtCore import *
 import socket
 from struct import *
+import datetime
 
 from_class = uic.loadUiType("09_TCP_SocketClientGUI.ui")[0]
 
@@ -15,6 +16,11 @@ class WindowClass(QMainWindow, from_class) :
 
         # flag
         self.connectTCP = False
+        self.connected = False
+
+        # timer
+        self.timer = QTimer(self)
+        self.timer.start(500)
 
         # ip address format
         range = "(?:[0-1]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])"
@@ -32,9 +38,11 @@ class WindowClass(QMainWindow, from_class) :
         self.led22.clicked.connect(self.clickLED22)
         self.led23.clicked.connect(self.clickLED23)
         self.move.clicked.connect(self.clickMove)
+        self.timer.timeout.connect(self.timeout)
     
     def __del__(self):
         self.sock.close()
+        self.connected = False
 
     def connect(self):
         if self.connectTCP == False:
@@ -44,6 +52,7 @@ class WindowClass(QMainWindow, from_class) :
             self.sock.connect((ip, int(port)))
             self.ConnectBtn.setText('Disconnect')
             self.connectTCP = True
+            self.connected = True
         else:
             self.sock.close()
             self.ConnectBtn.setText('Connect')
@@ -83,6 +92,20 @@ class WindowClass(QMainWindow, from_class) :
         rev = self.format.unpack(self.sock.recv(self.format.size))
         test = unpack('@ii', data)
         print(test)
+    
+    def timeout(self):
+        self.updateLED(34, 0)
+    
+    def updateLED(self, pin, status):
+        if self.connected == True:
+            data = self.format.pack(pin, status)
+            req = self.sock.send(data)
+            rev = self.format.unpack(self.sock.recv(self.format.size))
+            if rev[0] == 34:
+                self.photoresistor.setText(str(rev[1]))
+            
+            print(rev)
+
 
 
 if __name__ == "__main__":
