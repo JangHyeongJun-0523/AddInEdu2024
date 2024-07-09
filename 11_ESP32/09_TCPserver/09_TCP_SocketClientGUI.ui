@@ -25,12 +25,25 @@
    <property name="title">
     <string>TCP Server</string>
    </property>
+   <widget class="QPushButton" name="ConnectBtn">
+    <property name="geometry">
+     <rect>
+      <x>390</x>
+      <y>41</y>
+      <width>121</width>
+      <height>25</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Connect</string>
+    </property>
+   </widget>
    <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>30</x>
       <y>40</y>
-      <width>492</width>
+      <width>222</width>
       <height>27</height>
      </rect>
     </property>
@@ -45,6 +58,18 @@
      <item>
       <widget class="QLineEdit" name="ipEdit"/>
      </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>280</x>
+      <y>40</y>
+      <width>91</width>
+      <height>27</height>
+     </rect>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
       <widget class="QLabel" name="label_2">
        <property name="text">
@@ -55,10 +80,94 @@
      <item>
       <widget class="QLineEdit" name="portEdit"/>
      </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_2">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>120</y>
+     <width>141</width>
+     <height>171</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>LED On/Off</string>
+   </property>
+   <widget class="QWidget" name="layoutWidget">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>40</y>
+      <width>101</width>
+      <height>121</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout">
      <item>
-      <widget class="QPushButton" name="ConnectBtn">
+      <widget class="QCheckBox" name="led21">
+       <property name="layoutDirection">
+        <enum>Qt::LeftToRight</enum>
+       </property>
        <property name="text">
-        <string>Connect</string>
+        <string>   LED 21</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="led22">
+       <property name="text">
+        <string>   LED 22</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="led23">
+       <property name="text">
+        <string>   LED 23</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+  </widget>
+  <widget class="QGroupBox" name="groupBox_3">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>120</y>
+     <width>151</width>
+     <height>171</height>
+    </rect>
+   </property>
+   <property name="title">
+    <string>Servo Motor</string>
+   </property>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>50</y>
+      <width>111</width>
+      <height>101</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_2">
+     <item>
+      <widget class="QLabel" name="label_3">
+       <property name="text">
+        <string>Target Degree: </string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLineEdit" name="degree"/>
+     </item>
+     <item>
+      <widget class="QPushButton" name="move">
+       <property name="text">
+        <string>Move</string>
        </property>
       </widget>
      </item>

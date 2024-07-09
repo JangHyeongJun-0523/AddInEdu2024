@@ -8,9 +8,11 @@ WiFiServer server(80);
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
-  delay(100);
   Serial.println("ESP32 TCP Server Start");
   Serial.println(ssid);
+  pinMode(21, OUTPUT);
+  pinMode(22, OUTPUT);
+  pinMode(23, OUTPUT);
 
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
@@ -25,12 +27,35 @@ void setup() {
   server.begin();
 }
 
+struct protocol {
+  int pin = 21;
+  int status = 0;
+};
+
 void loop() {
   // put your main code here, to run repeatedly:
   WiFiClient client = server.available();
   if (client) {
     Serial.print("Client Connected : ");
-    Serial.print(client.remoteIP());
+    Serial.println(client.remoteIP());
+    struct protocol p;
+    while (client.connected()) {
+      char data[8];
+      //int i = 0;
+      while (client.available() > 0) {
+        client.readBytes(data, 8);
+        memcpy(&p, &data, sizeof(p));
+
+        digitalWrite(p.pin, p.status);
+
+        Serial.println(p.pin);
+        Serial.println(p.status);
+
+        client.write(data, 8);
+      }
+
+      delay (10);
+    }
 
     client.stop();
     Serial.println("Client Disconnedted!");
