@@ -5,4 +5,4 @@ FROM ubuntu:18.04
 RUN apt-get update
 
 # At start docker container, print "Hello, Docker"
-CMD [ "echo", "Hello, Docker" ]
+CMD [ "echo", "Hello, Docker"]
