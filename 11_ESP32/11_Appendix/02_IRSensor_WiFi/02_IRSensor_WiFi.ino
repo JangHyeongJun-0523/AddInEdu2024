@@ -1,24 +1,23 @@
 #include <WiFi.h>
 
-// WiFi Setting
 const char* ssid = "addinedu_class_2 (2.4G)";
 const char* password = "addinedu1";
 
-// Server setting
 WiFiServer server(80);
 
-// Set a pin number for the IR sensor(TCRT5000)
-#define TCRT5000_SENSOR_PIN 15
+#define TCRT5000_SENSOR_PIN 34
 
-void setup() 
+int value = 1;
+
+void setup()
 {
-  // Begin Serial network
-  Serial.begin(115200);
+  // Set the sensor pin mode
+  pinMode(TCRT5000_SENSOR_PIN, INPUT);
 
-  // WiFi connection
+  Serial.begin(115200);
   Serial.println("ESP32 TCP Server Start");
   Serial.println(ssid);
-  
+
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED)
   {
@@ -27,61 +26,53 @@ void setup()
   }
   Serial.println();
 
-  Serial.println("WiFi connected");
-  Serial.print("IP address: ");
+  Serial.print("IP Address : ");
   Serial.println(WiFi.localIP());
 
-  // Set the sensor pin mod
-  pinMode(TCRT5000_SENSOR_PIN, INPUT);
-
-  // Start Server
   server.begin();
 }
 
-void loop() 
+struct protocol
 {
-  // TCRT5000 센서 값 읽기
-  int sensorValue = analogRead(TCRT5000_SENSOR_PIN);
-  Serial.println(sensorValue);
+  int pin = TCRT5000_SENSOR_PIN;
+  int status = 0;
+};
 
-  // // WiFi 연결 확인
-  // if (WiFi.status() == WL_CONNECTED) 
-  // {
-  //   HTTPClient http;
+void loop()
+{
+  WiFiClient client = server.available();
+  if (client)
+  {
+    Serial.print("Client Connected : ");
+    Serial.println(client.remoteIP());
+    struct protocol p;
+    while (client.connected())
+    {
+      char data[8];
+      //int i = 0;
+      while (client.available() > 0)
+      {
+        client.readBytes(data, 8);
+        memcpy(&p, &data, sizeof(p));
 
-  //   // 서버 시작
-  //   http.begin(server);
-  //   http.addHeader("Content-Type", "application/json");
+        if (p.pin == TCRT5000_SENSOR_PIN)
+        {
+          value = analogRead(TCRT5000_SENSOR_PIN);
+          p.status = value;
 
-  //   // JSON 데이터 생성
-  //   StaticJsonDocument<200> jsonDoc;
-  //   jsonDoc["sensor_value"] = sensorValue;
+          memcpy(&data, &p, sizeof(p));
+        }
+        Serial.println(p.pin);
+        Serial.println(p.status);
+        Serial.println(value);
 
-  //   // JSON 직렬화
-  //   String requestBody;
-  //   serializeJson(jsonDoc, requestBody);
+        client.write(data, 8);
+      }
 
-  //   // HTTP POST 요청
-  //   int httpResponseCode = http.POST(requestBody);
+      delay (10);
+    }
 
-  //   if (httpResponseCode == 200) 
-  //   {
-  //     Serial.println("Data sent successfully");
-  //   }
-  //   else 
-  //   {
-  //     Serial.print("Failed to send data, error code: ");
-  //     Serial.println(httpResponseCode);
-  //   }
-
-  //   // HTTP 연결 종료
-  //   http.end();
-  // } 
-  // else 
-  // {
-  //   Serial.println("WiFi not connected");
-  // }
-
-  // // 주기적 데이터 전송을 위한 대기
-  delay(1000);
+    client.stop();
+    Serial.println("Client Disconnedted!");
+  }
 }
